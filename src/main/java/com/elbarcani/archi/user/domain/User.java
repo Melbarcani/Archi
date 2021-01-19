@@ -5,12 +5,34 @@ import java.util.List;
 
 public class User {
     private final int id;
-    private Form form;
+    private String firstName;
+    private String lastName;
+    private String email;
     private final List<Ticket> ticketList;
+
 
     public User(int id){
         this.id = id;
         ticketList = new ArrayList<>();
+    }
+    public User(int id, String firstName, String lastName, String email){
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        ticketList = new ArrayList<>();
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public int getId() {
@@ -19,10 +41,5 @@ public class User {
 
     public List<Ticket> getTicketList() {
         return ticketList;
-    }
-
-
-    public Form getForm() {
-        return form;
     }
 }

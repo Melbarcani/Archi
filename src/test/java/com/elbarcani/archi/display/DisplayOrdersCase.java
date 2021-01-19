@@ -4,7 +4,6 @@ import com.elbarcani.archi.user.domain.Ticket;
 import com.elbarcani.archi.user.domain.User;
 import com.elbarcani.archi.user.infrastructure.controller.FormController;
 import com.elbarcani.archi.user.infrastructure.controller.UserController;
-import com.elbarcani.archi.user.infrastructure.controller.UserDto;
 import com.elbarcani.archi.user.use_case.DisplayOrders;
 import com.elbarcani.archi.user.use_case.DisplayOrdersOnConsole;
 import io.cucumber.datatable.DataTable;
