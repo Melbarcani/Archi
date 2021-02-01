@@ -1,5 +1,6 @@
 package com.elbarcani.archi.user.infrastructure.http;
 
+import com.elbarcani.archi.user.infrastructure.controller.BringDto;
 import com.elbarcani.archi.user.infrastructure.controller.TicketDto;
 import com.elbarcani.archi.user.infrastructure.controller.UserDto;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -15,19 +16,19 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CallHttp {
+public class UserDTOHttp implements BringDto {
     private int userId;
     private static final String ORDER = "order";
     private static final String USER = "user/";
     private static final String URI_PREFIX = "http://demo2009247.mockable.io/";
     private static final String BACKSLASH = "/";
 
-    private static Logger logger = Logger.getLogger(CallHttp.class);
+    private static Logger logger = Logger.getLogger(UserDTOHttp.class);
 
     private HttpClient client;
 
 
-    public CallHttp() {
+    public UserDTOHttp() {
         client = HttpClient.newHttpClient();
     }
 

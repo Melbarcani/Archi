@@ -9,6 +9,8 @@ import org.eclipse.swt.widgets.Composite;
 
 public class Launcher extends DisplayWindow{
 
+    public static final String USER = "User";
+    public static final String ADMIN = "Admin";
     Button userButton;
     Button adminButton;
 
@@ -18,17 +20,12 @@ public class Launcher extends DisplayWindow{
     }
 
     @Override
-    protected void createTitleComposite(Composite parent) {
-        super.createTitleComposite(parent);
-    }
-
-    @Override
-    protected void createMainComposite(Composite parent) {
+    public void createMainComposite(Composite parent) {
         super.createMainComposite(parent);
         userButton = new Button(mainComposite, SWT.BUTTON1 );
-        userButton.setText("User");
+        userButton.setText(USER);
         adminButton = new Button(mainComposite, SWT.BUTTON1 );
-        adminButton.setText("Admin");
+        adminButton.setText(ADMIN);
     }
 
     @Override

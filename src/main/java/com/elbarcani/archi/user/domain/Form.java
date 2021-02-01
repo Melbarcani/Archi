@@ -27,4 +27,10 @@ public class Form {
         return ticketState;
     }
 
+    public void mergeWithNewForm(Form newForm) {
+        ticketState.putAll(newForm.getTicketsState());
+        if(ticketState.size() != ticketsList.size()){
+            ticketsList.addAll(newForm.getTicketsList());
+        }
+    }
 }

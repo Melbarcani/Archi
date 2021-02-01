@@ -4,10 +4,13 @@ import java.util.List;
 import java.util.Map;
 
 public interface FormDao {
-    List<Ticket> getTickets(int userId);
     List<Ticket> getAllTickets();
     Map<Integer, String> getTicketsState();
 
-    void insertTicket(int ticketId, int userId);
-    void saveTicketState(int ticketId, String state);
+    void saveForm(Form form, int userId);
+    void saveTicketState(Ticket ticket, Form newForm);
+
+    boolean isFormExist();
+    Form loadForm(int userId);
+    List<TicketStateHistory> loadTicketsHistory(int userId);
 }

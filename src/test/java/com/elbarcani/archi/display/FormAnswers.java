@@ -2,7 +2,6 @@ package com.elbarcani.archi.display;
 
 import com.elbarcani.archi.user.domain.Ticket;
 import com.elbarcani.archi.user.domain.User;
-import com.elbarcani.archi.user.infrastructure.controller.FormController;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -14,7 +13,7 @@ import java.util.List;
 
 public class FormAnswers {
     private User user;
-    private FormController formController;
+    /*private FormController formController;
 
     @Given("User {int}")
     public void setUser(int userId) {
@@ -47,5 +46,5 @@ public class FormAnswers {
     public void anEmailIsSentToTheUser(int userID) {
         // TODO
         Assert.assertEquals(user.getId(),userID);
-    }
+    }*/
 }

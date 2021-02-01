@@ -2,22 +2,17 @@ package com.elbarcani.archi.display;
 
 import com.elbarcani.archi.user.domain.Ticket;
 import com.elbarcani.archi.user.domain.User;
-import com.elbarcani.archi.user.infrastructure.controller.FormController;
-import com.elbarcani.archi.user.infrastructure.controller.UserController;
-import com.elbarcani.archi.user.use_case.DisplayOrders;
-import com.elbarcani.archi.user.use_case.DisplayOrdersOnConsole;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
 import org.junit.Assert;
 
 import java.util.List;
 
 public class DisplayOrdersCase {
     private User user;
-    private FormController formController;
+    /*private FormController formController;
 
     @Given("The user {int}")
     public void setUser(Integer userId) {
@@ -46,13 +41,13 @@ public class DisplayOrdersCase {
         formController.restoreNeverFilled();
     }
 
-    @When("I display the form")
+    *//*@When("I display the form")
     public void displayTheForm() {
         DisplayOrders display = new DisplayOrdersOnConsole();
         UserController controller = new UserController(display);
-        /*final UserDto userDto = new UserDto(1, "ok");
-        controller.display(userDto);*/
-    }
+        *//**//*final UserDto userDto = new UserDto(1, "ok");
+        controller.display(userDto);*//**//*
+    }*//*
 
     @Then("I should see :")
     public void iShouldSee(DataTable table) {
@@ -67,5 +62,5 @@ public class DisplayOrdersCase {
             Assert.assertEquals(currentRow.get(3), formController.getTicketsState().get(ticket.getTicketId()));
         }
     }
-
+*/
 }

@@ -1,8 +1,8 @@
 package com.elbarcani.archi.gui.swt.common;
 
-import com.elbarcani.archi.gui.service.UserSWTUIService;
-import com.elbarcani.archi.gui.service.UserUIService;
-import org.eclipse.swt.*;
+import com.elbarcani.archi.user.infrastructure.controller.UserController;
+import com.elbarcani.archi.user.infrastructure.service.FormService;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Color;
@@ -17,13 +17,13 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public class DisplayWindow {
-    private Display display;
-    private Shell shell;
-    protected UserUIService userUIService;
+    private final Display display;
+    private final Shell shell;
+    protected UserController userController;
 
     private static final String CANCEL_BTTN = "Cancel";
     private static final String OK_BTTN = "Ok";
-    private static final String RESET_BTTN = "Reset";
+    private static final String RESET_BTTN = "Home";
 
 
     private static final int DEFAULT_BOTTOM_HORIZONTAL_SPACING = 20;
@@ -52,21 +52,27 @@ public class DisplayWindow {
     Color DEFAULT_TITLE_FOREGROUND_COLOR;
 
     public DisplayWindow() {
-
         display = new Display();
         shell = new Shell(display);
-        shell.setText("Snippet 1");
         initServices();
         createControls();
         addListeners();
     }
 
+    public Shell getShell(){
+        return shell;
+    }
+
+    public Button getResetBtn() {
+        return resetBtn;
+    }
+
     protected void initServices(){
-        userUIService = new UserSWTUIService();
+        userController = new UserController();
     }
 
     protected void createControls() {
-        createLayout(displayArea);
+        createLayout();
         initColors();
         createTitleComposite(shell);
         createMainComposite(shell);
@@ -81,18 +87,12 @@ public class DisplayWindow {
         DEFAULT_TITLE_FOREGROUND_COLOR = new Color(display, 255, 255, 255);
     }
 
-    protected void createLayout(Rectangle displayArea) {
+    protected void createLayout() {
         createButtonCompositeLayout(2);
         GridLayout layout = new GridLayout();
-        //WidgetTools.resetMarginAndSpacingLayout(layout);
         shell.setLayout(layout);
         shell.setLayoutData(new GridData(GridData.FILL_BOTH));
-
-        //shell.setBackground(defaultBackgroundColor);
         shell.setBackgroundMode(SWT.INHERIT_DEFAULT);
-
-        //Warnings : If we move this update, display is broken.
-        //updateDisplayArea(displayArea);
     }
 
     protected void updateDisplayArea(Rectangle displayArea) {
@@ -104,7 +104,6 @@ public class DisplayWindow {
     protected void createTitleComposite(Composite parent) {
         titleComposite = new Composite(parent, SWT.NONE);
         GridLayout layout = new GridLayout();
-        //WidgetTools.resetMarginAndSpacingLayout(layout);
         layout.marginWidth = DEFAULT_MARGIN_WIDTH;
         layout.marginHeight = DEFAULT_TOP_MARGIN_HEIGHT;
         titleComposite.setLayout(layout);
@@ -120,7 +119,6 @@ public class DisplayWindow {
     protected void createMainComposite(Composite parent) {
         mainComposite = new Composite(parent, SWT.NONE);
         GridLayout layout = new GridLayout();
-        //WidgetTools.resetMarginAndSpacingLayout(layout);
         layout.marginWidth = DEFAULT_MARGIN_WIDTH;
         layout.marginHeight = DEFAULT_MARGIN_HEIGHT + 15;
         mainComposite.setLayout(layout);
@@ -128,11 +126,30 @@ public class DisplayWindow {
         mainComposite.setBackground(DEFAULT_MAIN_BACKGROUND_COLOR);
     }
 
-    protected void createButtonComposite(Composite parent) {
+    public Composite getTitleComposite() {
+        return titleComposite;
+    }
+
+    public Composite getMainComposite() {
+        return mainComposite;
+    }
+
+    public Composite getButtonComposite() {
+        return buttonComposite;
+    }
+
+    public Button getOkBttn() {
+        return okBttn;
+    }
+
+    public Button getCancelBttn() {
+        return cancelBttn;
+    }
+
+    public void createButtonComposite(Composite parent) {
         buttonComposite = new Composite(parent, SWT.NONE);
 
         GridLayout layout = new GridLayout(3, false);
-        //WidgetTools.resetMarginAndSpacingLayout(layout);
         layout.marginWidth = DEFAULT_MARGIN_WIDTH;
         layout.marginBottom = DEFAULT_BOTTOM_MARGIN_BOTTOM;
         layout.marginTop = DEFAULT_BOTTOM_MARGIN_TOP;
@@ -153,27 +170,23 @@ public class DisplayWindow {
 
     protected void createResetButton(Composite parent) {
         resetBtn = new Button(parent, SWT.NONE);
-        // ((GridData) resetBtn.getLayoutData()).horizontalAlignment = GridData.END;
         resetBtn.setText(RESET_BTTN);
         resetBtn.setVisible(false);
     }
 
     protected void createCancelButton(Composite parent) {
         cancelBttn = new Button(parent, SWT.NONE);
-        //((GridData) cancelBttn.getLayoutData()).grabExcessHorizontalSpace = false;
         cancelBttn.setText(CANCEL_BTTN);
     }
 
     protected void createOkButton(Composite parent) {
         okBttn = new Button(parent, SWT.NONE);
-        //((GridData) okBttn.getLayoutData()).grabExcessHorizontalSpace = false;
         okBttn.setText(OK_BTTN);
         okBttn.setEnabled(false);
     }
 
     protected GridLayout createButtonCompositeLayout(int columns) {
         GridLayout layout = new GridLayout(columns, false);
-        //WidgetTools.resetMarginAndSpacingLayout(layout);
         layout.marginWidth = DEFAULT_MARGIN_WIDTH;
         layout.marginBottom = DEFAULT_BOTTOM_MARGIN_BOTTOM;
         layout.marginTop = DEFAULT_BOTTOM_MARGIN_TOP;
@@ -197,28 +210,16 @@ public class DisplayWindow {
                 cancelPressed();
             }
         });
-        resetBtn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseUp(MouseEvent mouseEvent) {
-                resetPressed();
-            }
-        });
     }
 
     //====================================================================================================
     // Pressed methods
     //====================================================================================================
 
+    protected void okPressed(){};
+
     protected void cancelPressed() {
         dispose();
-    }
-
-    protected void okPressed() {
-
-    }
-
-    protected void resetPressed() {
-        // This method must be overridden on need
     }
 
     //====================================================================================================
@@ -251,36 +252,8 @@ public class DisplayWindow {
     // Setter methods
     //====================================================================================================
 
-    protected void setTitle(String title) {
+    public void setTitle(String title) {
         titleLbl.setText(title);
-    }
-
-    public void setTitleBackground(Color color) {
-        titleComposite.setBackground(color);
-    }
-
-    public void setTitleFont(Font font) {
-        titleLbl.setFont(font);
-    }
-
-    public void setTitleForeground(Color color) {
-        titleLbl.setForeground(color);
-    }
-
-    public void setMainBackground(Color color) {
-        mainComposite.setBackground(color);
-    }
-
-    public void setButtonBackground(Color color) {
-        buttonComposite.setBackground(color);
-    }
-
-    public void setOkButtonText(String text) {
-        okBttn.setText(text);
-    }
-
-    public void setCancelButtonText(String text) {
-        cancelBttn.setText(text);
     }
 
     //====================================================================================================
@@ -307,19 +280,16 @@ public class DisplayWindow {
 
     private Rectangle buildDisplayArea(int width, int height) {
         if (displayArea == null) {
-            width = (width < DEFAULT_MAIN_COMPOSITE_MINIMUM_WIDTH) ? DEFAULT_MAIN_COMPOSITE_MINIMUM_WIDTH : width;
+            width = Math.max(width, DEFAULT_MAIN_COMPOSITE_MINIMUM_WIDTH);
         } else {
-            width = displayArea.width < DEFAULT_MAIN_COMPOSITE_MINIMUM_WIDTH ? DEFAULT_MAIN_COMPOSITE_MINIMUM_WIDTH
-                    : displayArea.width;
+            width = Math.max(displayArea.width, DEFAULT_MAIN_COMPOSITE_MINIMUM_WIDTH);
             height = displayArea.height;
         }
 
         // Center the dialog in the active monitor
         Optional<Monitor> activeMonitor = getActiveMonitor(shell);
-        Rectangle rect = activeMonitor.isPresent()
-                ? activeMonitor.get().getBounds()
-                : shell.getBounds();
-        width = (width > rect.width) ? rect.width : width;
+        Rectangle rect = activeMonitor.map(Monitor::getBounds).orElseGet(shell::getBounds);
+        width = Math.min(width, rect.width);
         shell.setSize(width, height);
         Point centerPoint = getCenterPoint(shell, rect);
         return new Rectangle(centerPoint.x, centerPoint.y, width, height);
@@ -329,7 +299,7 @@ public class DisplayWindow {
         Display display = shell.getDisplay();
         // the cursor position defines the monitor used to display data
         Point cursor = display.getCursorLocation();
-        return Arrays.asList(display.getMonitors()).stream().filter(monitor -> monitor.getBounds().contains(cursor))
+        return Arrays.stream(display.getMonitors()).filter(monitor -> monitor.getBounds().contains(cursor))
                 .findFirst();
     }
 

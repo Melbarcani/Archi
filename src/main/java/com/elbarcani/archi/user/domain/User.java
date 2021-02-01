@@ -8,19 +8,16 @@ public class User {
     private String firstName;
     private String lastName;
     private String email;
-    private final List<Ticket> ticketList;
 
 
     public User(int id){
         this.id = id;
-        ticketList = new ArrayList<>();
     }
     public User(int id, String firstName, String lastName, String email){
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        ticketList = new ArrayList<>();
     }
 
     public String getFirstName() {
@@ -37,9 +34,5 @@ public class User {
 
     public int getId() {
         return id;
-    }
-
-    public List<Ticket> getTicketList() {
-        return ticketList;
     }
 }
