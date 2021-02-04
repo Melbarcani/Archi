@@ -1,13 +1,11 @@
 package com.elbarcani.archi.user.infrastructure.swt;
 
-import com.elbarcani.archi.gui.swt.common.DisplayWindow;
-import com.elbarcani.archi.gui.swt.user.UserChoices;
-import com.elbarcani.archi.gui.swt.user.UserWindow;
+import com.elbarcani.archi.infrastructure.swt.DisplayWindow;
 import com.elbarcani.archi.user.domain.Form;
 import com.elbarcani.archi.user.domain.Ticket;
 import com.elbarcani.archi.user.domain.User;
 import com.elbarcani.archi.user.infrastructure.controller.UserController;
-import com.elbarcani.archi.user.infrastructure.service.FormService;
+import com.elbarcani.archi.user.infrastructure.controller.FormController;
 import com.elbarcani.archi.user.use_case.AddOrEditForm;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
@@ -30,18 +28,18 @@ public class EditChoiceWindow implements AddOrEditForm {
     public static final String FORM_FILE_TEXT = "form_file";
     public static final String TEXT_EXTENSION = ".txt";
 
-    private int userId;
     private Form form;
     private Map<Integer, String> ticketState;
-    private FormService formService;
-    private User user;
+    private FormController formService;
+    private final User user;
 
     private Label incompleteFormLabel;
     private final DisplayWindow window;
     private Composite mainComposite;
 
-    public EditChoiceWindow() {
+    public EditChoiceWindow(User user) {
         window = new DisplayWindow();
+        this.user = user;
         createComposites();
         addListeners();
     }
@@ -68,40 +66,40 @@ public class EditChoiceWindow implements AddOrEditForm {
     }
 
     @Override
-    public void setUser(int userId) {
-        this.userId = userId;
-    }
-
-    @Override
     public void display(UserController userController) {
-        window.setTitle(String.valueOf(userId));
+        window.setTitle(String.valueOf(user.getId()));
         if(isFormExist()){
             loadPrecedentForm(userController);
         }
         if (form.getTicketsList().isEmpty()) {
             createNewForm(userController);
         }
-        for (Ticket ticket : form.getTicketsList()) {
-            Composite ticketComposite = new Composite(mainComposite, SWT.NONE);
-            populateTicketsComposite(ticket, ticketComposite);
-            createRadioButtons(ticket, ticketComposite);
-        }
+        populateComposite();
+
         mainComposite.layout();
         window.getResetBtn().setVisible(true);
         window.open();
     }
 
-    @Override
-    public boolean isFormExist(){
-        formService = new FormService(FORM_FILE_TEXT + TEXT_EXTENSION);
-        return formService.isFormFileExist();
+    private void populateComposite() {
+        for (Ticket ticket : form.getTicketsList()) {
+            Composite ticketComposite = new Composite(mainComposite, SWT.NONE);
+            populateTicketLabels(ticket, ticketComposite);
+            createRadioButtons(ticket, ticketComposite);
+        }
     }
 
-    private void populateTicketsComposite(Ticket ticket, Composite ticketComposite) {
+    @Override
+    public boolean isFormExist(){
+        formService = new FormController(FORM_FILE_TEXT + TEXT_EXTENSION);
+        return formService.isFormDataExist();
+    }
+
+    private void populateTicketLabels(Ticket ticket, Composite ticketComposite) {
         GridLayout layout = new GridLayout(4, false);
         ticketComposite.setLayout(layout);
         Label ticketIdLbl = new Label(ticketComposite, SWT.NONE);
-        ticketIdLbl.setText(String.valueOf(ticket.getTicketId()));
+        ticketIdLbl.setText(String.valueOf(ticket.getId()));
         Label ticketPriceLbl = new Label(ticketComposite, SWT.NONE);
         ticketPriceLbl.setText(String.valueOf(ticket.getPrice()));
         Label userIdLbl = new Label(ticketComposite, SWT.NONE);
@@ -118,11 +116,11 @@ public class EditChoiceWindow implements AddOrEditForm {
 
         Button keepButton = new Button(genderGroup, SWT.RADIO);
         keepButton.setText(KEEP_TICKET_TEXT);
-        keepButton.setSelection(KEEP_TICKET_TEXT.equals(form.getTicketsState().get(ticket.getTicketId())));
+        keepButton.setSelection(KEEP_TICKET_TEXT.equals(form.getTicketsState().get(ticket.getId())));
 
         Button reimburseButton = new Button(genderGroup, SWT.RADIO);
         reimburseButton.setText(REIMBURSE_TICKET_TEXT);
-        reimburseButton.setSelection(REIMBURSE_TICKET_TEXT.equals(form.getTicketsState().get(ticket.getTicketId())));
+        reimburseButton.setSelection(REIMBURSE_TICKET_TEXT.equals(form.getTicketsState().get(ticket.getId())));
 
         addRadioListeners(keepButton);
         addRadioListeners(reimburseButton);
@@ -130,18 +128,16 @@ public class EditChoiceWindow implements AddOrEditForm {
 
     @Override
     public void createNewForm(UserController userController) {
-        List<Ticket> tickets = userController.getOrderByUser(userId);
-        user = userController.getUserById(userId);
+        List<Ticket> tickets = userController.getOrderByUser();
         ticketState = new TreeMap<>();
         form = new Form(ticketState, tickets);
-        formService = new FormService(FORM_FILE_TEXT + TEXT_EXTENSION);
+        formService = new FormController(FORM_FILE_TEXT + TEXT_EXTENSION);
     }
 
     @Override
     public void loadPrecedentForm(UserController userController) {
-        user = userController.getUserById(userId);
-        formService = new FormService(FORM_FILE_TEXT + TEXT_EXTENSION);
-        form = formService.loadForm(userId);
+        formService = new FormController(FORM_FILE_TEXT + TEXT_EXTENSION);
+        form = formService.loadForm(user.getId());
         ticketState = form.getTicketsState();
     }
 
@@ -156,7 +152,7 @@ public class EditChoiceWindow implements AddOrEditForm {
                         incompleteFormLabel.setVisible(false);
                     }
                     Ticket ticket = (Ticket) source.getParent().getData();
-                    ticketState.put(ticket.getTicketId(), source.getText());
+                    ticketState.put(ticket.getId(), source.getText());
                 }
             }
         });
@@ -169,7 +165,7 @@ public class EditChoiceWindow implements AddOrEditForm {
             if (incompleteFormLabel != null) {
                 incompleteFormLabel.setVisible(false);
             }
-            formService.saveForm(form, userId);
+            formService.saveForm(form, user.getId());
 
             openSuccessMessageDialog();
             returnToUserChoices();
@@ -186,7 +182,7 @@ public class EditChoiceWindow implements AddOrEditForm {
 
     private void returnToUserChoices() {
         window.dispose();
-        UserChoices u = new UserChoices();
+        MenuWindow u = new MenuWindow();
         u.setUser(user);
         u.open();
     }

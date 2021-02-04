@@ -1,18 +1,20 @@
 package com.elbarcani.archi.user.domain;
 
 public class Ticket {
-    private int ticketId;
+    private int id;
     private int price;
     private int userId;
 
+    public Ticket(){}
+
     public Ticket(int id, int price, int userId) {
-        this.ticketId = id;
+        this.id = id;
         this.price = price;
         this.userId = userId;
     }
 
-    public int getTicketId() {
-        return ticketId;
+    public int getId() {
+        return id;
     }
 
     public int getPrice() {

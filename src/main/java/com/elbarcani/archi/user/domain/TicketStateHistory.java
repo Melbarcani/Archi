@@ -5,6 +5,7 @@ import java.util.List;
 
 public class TicketStateHistory {
     private int ticketId;
+    private int userId;
     private List<StateDate> stateDateList;
 
     public TicketStateHistory(int ticketId) {
@@ -14,6 +15,14 @@ public class TicketStateHistory {
 
     public int getTicketId() {
         return ticketId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public int getUserId() {
+        return userId;
     }
 
     public List<StateDate> getStateDateList() {

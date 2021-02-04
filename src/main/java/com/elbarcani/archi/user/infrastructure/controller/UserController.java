@@ -2,26 +2,33 @@ package com.elbarcani.archi.user.infrastructure.controller;
 
 import com.elbarcani.archi.user.domain.Ticket;
 import com.elbarcani.archi.user.domain.User;
-import com.elbarcani.archi.user.infrastructure.http.UserDTOHttp;
+import com.elbarcani.archi.user.infrastructure.dto.TicketDto;
+import com.elbarcani.archi.user.infrastructure.dto.UserDto;
+import com.elbarcani.archi.user.infrastructure.dto.http.HttpTicketDto;
+import com.elbarcani.archi.user.infrastructure.dto.http.HttpUserDto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class UserController {
 
-    public User getUserById(int userId){
-        BringDto callHttp = new UserDTOHttp();
-        UserDto userDto = callHttp.getUserDto(userId);
-        return new User(userDto.getId(), userDto.getFirstName(), userDto.getLastName(), userDto.getEmail());
+    int userId;
+    UserDto userDto;
+
+    public UserController(int userId) {
+        this.userId = userId;
+        userDto = new HttpUserDto(userId);
     }
 
-    public List<Ticket> getOrderByUser(int userId) {
-        BringDto callHttp = new UserDTOHttp();
-        List<TicketDto> order = callHttp.getOrderDtoByUser(userId);
-        List<Ticket> ticketList = new ArrayList<>();
-        for(TicketDto dto : order){
-            ticketList.add(new Ticket(dto.getId(), dto.getPrice(), dto.getUserId()));
-        }
-        return ticketList;
+    public User getUserById() {
+        return userDto.getUserDto();
+    }
+
+    public boolean isUserExist() {
+        return userDto.isUserExist();
+    }
+
+    public List<Ticket> getOrderByUser() {
+        TicketDto ticketDto = new HttpTicketDto(userId);
+        return ticketDto.getOrderDtoByUser();
     }
 }

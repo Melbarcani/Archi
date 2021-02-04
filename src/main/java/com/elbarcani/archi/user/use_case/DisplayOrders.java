@@ -4,5 +4,4 @@ import com.elbarcani.archi.user.infrastructure.controller.UserController;
 
 public interface DisplayOrders {
     void display(UserController userController);
-    void setUser(int userId);
 }

@@ -1,8 +1,8 @@
 package com.elbarcani.archi.user.domain;
 
 public class StateDate {
-    private String state;
-    private String date;
+    private final String state;
+    private final String date;
 
     public StateDate(String state, String date) {
         this.state = state;

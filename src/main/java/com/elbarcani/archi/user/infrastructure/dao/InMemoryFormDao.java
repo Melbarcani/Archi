@@ -11,22 +11,14 @@ import java.util.*;
 
 public class InMemoryFormDao implements FormDao, Serializable {
     public static final String SEPARATOR = ",";
+    private static final int MERGE_ID = -1;
+
     private Form form;
     private BufferedWriter bufferedWriter;
-    private String fileName;
+    private final String fileName;
 
     public InMemoryFormDao(String fileName) {
         this.fileName = fileName;
-    }
-
-    @Override
-    public List<Ticket> getAllTickets() {
-        return null;
-    }
-
-    @Override
-    public Map<Integer, String> getTicketsState() {
-        return null;
     }
 
     @Override
@@ -40,35 +32,77 @@ public class InMemoryFormDao implements FormDao, Serializable {
     @Override
     public void saveForm(Form newForm, int userId) {
         try {
-            if (isFormExist()) {
-                Form currentUserForm = loadForm(userId);
-                StringBuilder holeFormFile = new StringBuilder();
-                loadForm(-1);
-                form.mergeWithNewForm(newForm);
-                if (!currentUserForm.getTicketsList().isEmpty()) {
-                    for (Ticket ticket : form.getTicketsList()) {
-                        holeFormFile.append(appendNewTicketState(ticket, form, userId));
-                    }
-                    FileWriter outputStream = new FileWriter(fileName);
-                    bufferedWriter = new BufferedWriter(outputStream);
-                } else {
-                    FileWriter outputStream = new FileWriter(fileName);
-                    bufferedWriter = new BufferedWriter(outputStream);
-                    for (Ticket ticket : form.getTicketsList()) {
-                        saveTicketState(ticket, form);
-                    }
-                }
-                bufferedWriter.write(holeFormFile.toString());
+            if (!isFormExist()) {
+                saveNewFormInFile(newForm);
             } else {
-                FileWriter outputStream = new FileWriter(fileName);
-                bufferedWriter = new BufferedWriter(outputStream);
-                for (Ticket ticket : newForm.getTicketsList()) {
-                    saveTicketState(ticket, newForm);
-                }
+                appendFormToExistingFile(newForm, userId);
             }
             bufferedWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void appendFormToExistingFile(Form newForm, int userId) throws IOException {
+        Form currentUserForm = loadForm(userId);
+        StringBuilder holeFormFile = mergeForms(newForm);
+        if (!currentUserForm.getTicketsList().isEmpty()) {
+            appendToFormFile(userId, holeFormFile);
+        } else {
+            saveNewFormInFile(form);
+        }
+        bufferedWriter.write(holeFormFile.toString());
+    }
+
+    private StringBuilder mergeForms(Form newForm) {
+        StringBuilder holeFormFile = new StringBuilder();
+        loadForm(MERGE_ID);
+        form.mergeWithNewForm(newForm);
+        return holeFormFile;
+    }
+
+    private void saveNewFormInFile(Form form) throws IOException {
+        FileWriter outputStream = new FileWriter(fileName);
+        bufferedWriter = new BufferedWriter(outputStream);
+        for (Ticket ticket : form.getTicketsList()) {
+            saveTicketState(ticket, form);
+        }
+    }
+
+    private void appendToFormFile(int userId, StringBuilder holeFormFile) throws IOException {
+        for (Ticket ticket : form.getTicketsList()) {
+            holeFormFile.append(appendNewTicketState(ticket, form, userId));
+        }
+        FileWriter outputStream = new FileWriter(fileName);
+        bufferedWriter = new BufferedWriter(outputStream);
+    }
+
+    private StringBuilder appendNewTicketState(Ticket ticket, Form newForm, int userId) {
+        StringBuilder holeFormFile = new StringBuilder();
+        try {
+            var reader = new FileReader(fileName);
+            BufferedReader bufferedReader = new BufferedReader(reader);
+            convertFormToString(ticket, newForm, userId, holeFormFile, bufferedReader);
+            bufferedReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return holeFormFile;
+    }
+
+    private void convertFormToString(Ticket ticket, Form newForm, int userId, StringBuilder holeFormFile, BufferedReader bufferedReader) throws IOException {
+        String lineTicket;
+        while ((lineTicket = bufferedReader.readLine()) != null) {
+            if (ticket.getId() == Integer.parseInt(lineTicket.split(SEPARATOR)[0])) {
+                if (userId != ticket.getUserId()) {
+                    holeFormFile.append(lineTicket).append(System.lineSeparator());
+                } else {
+                    holeFormFile.append(lineTicket)
+                            .append(SEPARATOR).append(newForm.getTicketsState().get(ticket.getId()))
+                            .append(SEPARATOR).append(getCurrentDate())
+                            .append(System.lineSeparator());
+                }
+            }
         }
     }
 
@@ -77,59 +111,37 @@ public class InMemoryFormDao implements FormDao, Serializable {
         try {
             FileReader reader = new FileReader(fileName);
             BufferedReader bufferedReader = new BufferedReader(reader);
-            String lineTicket;
             Map<Integer, String> ticketState = new HashMap<>();
             List<Ticket> ticketsList = new ArrayList<>();
-            if (userId == -1) {
-                while ((lineTicket = bufferedReader.readLine()) != null) {
-                    loadTicketFromLine(lineTicket, ticketState, ticketsList);
-                }
-            } else {
-                while ((lineTicket = bufferedReader.readLine()) != null) {
-                    loadTicketFromLine(lineTicket, ticketState, ticketsList, userId);
-                }
-            }
+            loadTicket(userId, bufferedReader, ticketState, ticketsList);
             form = new Form(ticketState, ticketsList);
             reader.close();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
         return form;
     }
 
-    private StringBuilder appendNewTicketState(Ticket ticket, Form newForm, int userId) {
-        StringBuilder holeFormFile = new StringBuilder();
-        try {
-            var reader = new FileReader(fileName);
-            BufferedReader bufferedReader = new BufferedReader(reader);
-            String lineTicket;
+    private void loadTicket(int userId, BufferedReader bufferedReader, Map<Integer, String> ticketState, List<Ticket> ticketsList) throws IOException {
+        String lineTicket;
+        if (userId == MERGE_ID) {
             while ((lineTicket = bufferedReader.readLine()) != null) {
-                if (ticket.getTicketId() == Integer.parseInt(lineTicket.split(SEPARATOR)[0])) {
-                    if(ticket.getUserId() != userId){
-                        holeFormFile.append(lineTicket).append(System.lineSeparator());
-                    } else {
-                        holeFormFile.append(lineTicket)
-                                .append(SEPARATOR).append(newForm.getTicketsState().get(ticket.getTicketId()))
-                                .append(SEPARATOR).append(getCurrentDate())
-                                .append(System.lineSeparator());
-                    }
-                }
+                loadTicketFromLine(lineTicket, ticketState, ticketsList);
             }
-            bufferedReader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else {
+            while ((lineTicket = bufferedReader.readLine()) != null) {
+                loadTicketFromLine(lineTicket, ticketState, ticketsList, userId);
+            }
         }
-        return holeFormFile;
     }
 
     @Override
     public void saveTicketState(Ticket ticket, Form newForm) {
         try {
-            bufferedWriter.write(ticket.getTicketId()
+            bufferedWriter.write(ticket.getId()
                     + SEPARATOR + ticket.getPrice()
                     + SEPARATOR + ticket.getUserId()
-                    + SEPARATOR + newForm.getTicketsState().get(ticket.getTicketId())
+                    + SEPARATOR + newForm.getTicketsState().get(ticket.getId())
                     + SEPARATOR + getCurrentDate());
             bufferedWriter.newLine();
         } catch (IOException e) {
@@ -144,24 +156,23 @@ public class InMemoryFormDao implements FormDao, Serializable {
 
     private void loadTicketFromLine(String lineTicket, Map<Integer, String> ticketState, List<Ticket> ticketsList) {
         String[] data = lineTicket.split(SEPARATOR);
-        Ticket ticket = new Ticket(
-                Integer.parseInt(data[0]),
-                Integer.parseInt(data[1]),
-                Integer.parseInt(data[2]));
-        ticketsList.add(ticket);
-        ticketState.put(ticket.getTicketId(), data[data.length - 2]);
+        loadTicket(ticketState, ticketsList, data);
     }
 
     private void loadTicketFromLine(String lineTicket, Map<Integer, String> ticketState, List<Ticket> ticketsList, int userId) {
         String[] data = lineTicket.split(SEPARATOR);
         if (Integer.parseInt(data[2]) == userId) {
-            Ticket ticket = new Ticket(
-                    Integer.parseInt(data[0]),
-                    Integer.parseInt(data[1]),
-                    Integer.parseInt(data[2]));
-            ticketsList.add(ticket);
-            ticketState.put(ticket.getTicketId(), data[data.length - 2]);
+            loadTicket(ticketState, ticketsList, data);
         }
+    }
+
+    private void loadTicket(Map<Integer, String> ticketState, List<Ticket> ticketsList, String[] data) {
+        Ticket ticket = new Ticket(
+                Integer.parseInt(data[0]),
+                Integer.parseInt(data[1]),
+                Integer.parseInt(data[2]));
+        ticketsList.add(ticket);
+        ticketState.put(ticket.getId(), data[data.length - 2]);
     }
 
     @Override
@@ -173,9 +184,7 @@ public class InMemoryFormDao implements FormDao, Serializable {
             String lineTicket;
             while ((lineTicket = bufferedReader.readLine()) != null) {
                 Optional<TicketStateHistory> ticketHistory = loadTicketHistory(lineTicket, userId);
-                if (ticketHistory.isPresent()) {
-                    ticketsHistories.add(ticketHistory.get());
-                }
+                ticketHistory.ifPresent(ticketsHistories::add);
             }
             reader.close();
 
@@ -186,12 +195,13 @@ public class InMemoryFormDao implements FormDao, Serializable {
     }
 
     private Optional<TicketStateHistory> loadTicketHistory(String line, int userId) {
-        String data[] = line.split(SEPARATOR);
+        String[] data = line.split(SEPARATOR);
         Optional<TicketStateHistory> ticketHistory = Optional.empty();
         if (Integer.parseInt(data[2]) == userId) {
             ticketHistory = Optional.of(new TicketStateHistory(Integer.parseInt(data[0])));
             for (int i = 3; i < data.length; i += 2) {
                 ticketHistory.get().addStateDateToTicket(new StateDate(data[i], data[i + 1]));
+                ticketHistory.get().setUserId(Integer.parseInt(data[2]));
             }
         }
         return ticketHistory;

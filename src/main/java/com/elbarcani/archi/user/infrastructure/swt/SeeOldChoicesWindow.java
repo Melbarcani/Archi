@@ -1,11 +1,10 @@
 package com.elbarcani.archi.user.infrastructure.swt;
 
-import com.elbarcani.archi.gui.swt.common.DisplayWindow;
-import com.elbarcani.archi.gui.swt.user.UserWindow;
-import com.elbarcani.archi.user.domain.Form;
+import com.elbarcani.archi.infrastructure.swt.DisplayWindow;
 import com.elbarcani.archi.user.domain.StateDate;
 import com.elbarcani.archi.user.domain.TicketStateHistory;
-import com.elbarcani.archi.user.infrastructure.service.FormService;
+import com.elbarcani.archi.user.domain.User;
+import com.elbarcani.archi.user.infrastructure.controller.FormController;
 import com.elbarcani.archi.user.use_case.SeeOldChoices;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
@@ -14,24 +13,27 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 
 import java.util.List;
 
 public class SeeOldChoicesWindow implements SeeOldChoices {
-    private int userId;
     private final DisplayWindow window;
     private Composite mainComposite;
-    private Form form;
-    private FormService formService;
-    List<TicketStateHistory> formHistoryList;
+    private final FormController formService;
+    private List<TicketStateHistory> formHistoryList;
+    private final User user;
 
     public static final String FORM_FILE_TEXT = "form_file";
     public static final String TEXT_EXTENSION = ".txt";
 
-    public SeeOldChoicesWindow() {
-        window= new DisplayWindow();
+    public SeeOldChoicesWindow(User user) {
+        window = new DisplayWindow();
+        this.user = user;
+        formService = new FormController(FORM_FILE_TEXT + TEXT_EXTENSION);
         createComposites();
         addListeners();
+        loadFormHistory();
     }
 
     private void addListeners() {
@@ -50,22 +52,14 @@ public class SeeOldChoicesWindow implements SeeOldChoices {
     }
 
     @Override
-    public void setUser(int userId){
-        this.userId = userId;
-    }
-
-    @Override
-    public boolean isFormExist(){
-        formService = new FormService(FORM_FILE_TEXT + TEXT_EXTENSION);
-        return formService.isFormFileExist();
+    public boolean isFormExist() {
+        return formService.isFormDataExist();
     }
 
     @Override
     public void loadFormHistory() {
-        if(isFormExist()){
-            formHistoryList = formService.loadFormHistory(userId);
-            createHistoryComposite();
-        }
+        formHistoryList = formService.loadFormHistory(user.getId());
+        createHistoryComposite();
     }
 
     private void createHistoryComposite() {
@@ -74,7 +68,7 @@ public class SeeOldChoicesWindow implements SeeOldChoices {
         gridLayout.horizontalSpacing = 20;
         mainComposite.setLayout(gridLayout);
 
-        for(TicketStateHistory stateHistory : formHistoryList){
+        for (TicketStateHistory stateHistory : formHistoryList) {
             createTicketHistoryComposite(mainComposite, stateHistory);
         }
         mainComposite.layout();
@@ -82,6 +76,16 @@ public class SeeOldChoicesWindow implements SeeOldChoices {
 
     private void createTicketHistoryComposite(Composite parent, TicketStateHistory stateHistory) {
         Composite ticketComposite = new Composite(parent, SWT.NONE);
+        createCompositeLayout(stateHistory, ticketComposite);
+        for (StateDate state : stateHistory.getStateDateList()) {
+            Label stateLabel = new Label(ticketComposite, SWT.None);
+            Label dateLabel = new Label(ticketComposite, SWT.None);
+            stateLabel.setText(state.getState());
+            dateLabel.setText(state.getDate());
+        }
+    }
+
+    private void createCompositeLayout(TicketStateHistory stateHistory, Composite ticketComposite) {
         GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 2;
         ticketComposite.setLayout(gridLayout);
@@ -91,22 +95,21 @@ public class SeeOldChoicesWindow implements SeeOldChoices {
         gridData.horizontalAlignment = GridData.FILL;
         gridData.horizontalSpan = 2;
         ticketIdLabel.setLayoutData(gridData);
-        for(StateDate state : stateHistory.getStateDateList()){
-            Label stateLabel = new Label(ticketComposite, SWT.None);
-            Label dateLabel = new Label(ticketComposite, SWT.None);
-            stateLabel.setText(state.getState());
-            dateLabel.setText(state.getDate());
-        }
     }
 
     @Override
     public void createNonExistentFormComposite() {
-
+        MessageBox dialog =
+                new MessageBox(window.getShell(), SWT.OK);
+        dialog.setText("Non existent form");
+        dialog.setMessage("You don't have filled your form yet!");
+        dialog.open();
     }
 
     @Override
     public void display() {
-        window.setTitle(String.valueOf(userId));
+
+        window.setTitle(String.valueOf(user.getId()));
         window.getResetBtn().setVisible(true);
         window.open();
     }
