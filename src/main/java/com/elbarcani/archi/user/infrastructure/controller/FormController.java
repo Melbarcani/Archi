@@ -1,7 +1,7 @@
 package com.elbarcani.archi.user.infrastructure.controller;
 
 import com.elbarcani.archi.user.domain.Form;
-import com.elbarcani.archi.user.infrastructure.dao.FormDao;
+import com.elbarcani.archi.user.domain.FormDao;
 import com.elbarcani.archi.user.domain.TicketStateHistory;
 import com.elbarcani.archi.user.infrastructure.dao.InMemoryFormDao;
 

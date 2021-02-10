@@ -3,8 +3,9 @@ package com.elbarcani.archi.user.infrastructure.swt;
 import com.elbarcani.archi.infrastructure.swt.DisplayWindow;
 import com.elbarcani.archi.user.domain.Ticket;
 import com.elbarcani.archi.user.domain.User;
-import com.elbarcani.archi.user.infrastructure.controller.UserController;
-import com.elbarcani.archi.user.use_case.DisplayOrders;
+import com.elbarcani.archi.user.domain.TicketDao;
+import com.elbarcani.archi.user.infrastructure.dao.HttpTicketDao;
+import com.elbarcani.archi.user.use_case.LoadUserTickets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -14,14 +15,16 @@ import org.eclipse.swt.widgets.Label;
 
 import java.util.List;
 
-public class ShowOrderWindow implements DisplayOrders {
+public class ShowOrderWindow {
     private final DisplayWindow window;
     private Composite mainComposite;
-    private User user;
+    private final User user;
+    private final List<Ticket> tickets;
 
     public ShowOrderWindow(User user) {
-        window= new DisplayWindow();
+        window = new DisplayWindow();
         this.user = user;
+        tickets = loadTickets();
         createComposites();
         addListeners();
     }
@@ -39,13 +42,11 @@ public class ShowOrderWindow implements DisplayOrders {
 
     private void createComposites() {
         mainComposite = window.getMainComposite();
+        createTicketsComposite(tickets);
     }
 
-    @Override
-    public void display(UserController userController) {
-        window.setTitle(String.valueOf(user.getId()));
-        List<Ticket> tickets = userController.getOrderByUser();
-        for(Ticket ticket : tickets){
+    private void createTicketsComposite(List<Ticket> tickets) {
+        for (Ticket ticket : tickets) {
             Composite ticketComposite = new Composite(mainComposite, SWT.NONE);
             GridLayout layout = new GridLayout(3, false);
             ticketComposite.setLayout(layout);
@@ -56,6 +57,16 @@ public class ShowOrderWindow implements DisplayOrders {
             Label userIdLbl = new Label(ticketComposite, SWT.NONE);
             userIdLbl.setText(String.valueOf(ticket.getUserId()));
         }
+    }
+
+    private List<Ticket> loadTickets() {
+        TicketDao ticketDao = new HttpTicketDao(user.getId());
+        LoadUserTickets loadTickets = new LoadUserTickets(ticketDao);
+        return loadTickets.execute();
+    }
+
+    public void open(){
+        window.setTitle(String.valueOf(user.getId()));
         mainComposite.layout();
         window.getResetBtn().setVisible(true);
         window.open();

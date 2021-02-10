@@ -2,7 +2,6 @@ package com.elbarcani.archi.infrastructure.swt;
 
 import com.elbarcani.Launcher;
 import com.elbarcani.archi.client_service.infrastructure.swt.UserServiceWindow;
-import com.elbarcani.archi.client_service.use_case.UserServiceMenu;
 import com.elbarcani.archi.user.infrastructure.swt.UserWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
@@ -18,7 +17,11 @@ public class LauncherWindow extends DisplayWindow implements Launcher {
     Button userServiceButton;
 
     public LauncherWindow() {
-        super();
+        super.open();
+    }
+
+    @Override
+    public void open() {
         super.open();
     }
 
@@ -50,7 +53,7 @@ public class LauncherWindow extends DisplayWindow implements Launcher {
 
     public void openUserServiceMenu() {
         dispose();
-        UserServiceMenu adminMenuWindow = new UserServiceWindow();
+        UserServiceWindow adminMenuWindow = new UserServiceWindow();
         adminMenuWindow.display();
     }
 

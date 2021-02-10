@@ -10,14 +10,22 @@ import java.time.LocalDate;
 import java.util.*;
 
 public class InMemoryFormDao implements FormDao, Serializable {
+
+    public static final String FORM_FILE_TEXT = "form_file";
+    public static final String TEXT_EXTENSION = ".txt";
+
     public static final String SEPARATOR = ",";
     private static final int MERGE_ID = -1;
 
     private Form form;
     private BufferedWriter bufferedWriter;
-    private final String fileName;
+    private String fileName;
 
-    public InMemoryFormDao(String fileName) {
+    public InMemoryFormDao() {
+        fileName = FORM_FILE_TEXT + TEXT_EXTENSION;
+    }
+
+    public InMemoryFormDao(String fileName){
         this.fileName = fileName;
     }
 
@@ -54,19 +62,19 @@ public class InMemoryFormDao implements FormDao, Serializable {
         bufferedWriter.write(holeFormFile.toString());
     }
 
-    private StringBuilder mergeForms(Form newForm) {
-        StringBuilder holeFormFile = new StringBuilder();
-        loadForm(MERGE_ID);
-        form.mergeWithNewForm(newForm);
-        return holeFormFile;
-    }
-
     private void saveNewFormInFile(Form form) throws IOException {
         FileWriter outputStream = new FileWriter(fileName);
         bufferedWriter = new BufferedWriter(outputStream);
         for (Ticket ticket : form.getTicketsList()) {
             saveTicketState(ticket, form);
         }
+    }
+
+    private StringBuilder mergeForms(Form newForm) {
+        StringBuilder holeFormFile = new StringBuilder();
+        loadForm(MERGE_ID);
+        form.mergeWithNewForm(newForm);
+        return holeFormFile;
     }
 
     private void appendToFormFile(int userId, StringBuilder holeFormFile) throws IOException {

@@ -1,8 +1,8 @@
 package com.elbarcani.archi.client_service.infrastructure.swt;
 
-import com.elbarcani.archi.client_service.infrastructure.controller.ChoicesController;
-import com.elbarcani.archi.client_service.use_case.SeeLastUserChoices;
-import com.elbarcani.archi.client_service.use_case.UserServiceMenu;
+import com.elbarcani.archi.client_service.domaine.ChoicesQueryDao;
+import com.elbarcani.archi.client_service.infrastructure.dao.InMemoryChoicesQueryDao;
+import com.elbarcani.archi.client_service.use_case.LoadAllSavedChoices;
 import com.elbarcani.archi.infrastructure.swt.DisplayWindow;
 import com.elbarcani.archi.client_service.domaine.TicketHistory;
 
@@ -12,29 +12,24 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
 
 import java.util.List;
 
-public class SeeLastUsersChoicesWindow implements SeeLastUserChoices {
-    public static final String FORM_FILE_TEXT = "form_file";
-    public static final String TEXT_EXTENSION = ".txt";
+public class SeeLastUsersChoicesWindow {
     private static final String USERS_LAST_CHOICES = "Users last choices";
     private static final String USER_ID = "userId";
     private static final String ANSWER = "Answer";
     private static final String DATE = "Date";
     private static final String ID = "Id";
-    private static final String NON_EXISTENT_DATA = "Non existent data";
-    private static final String THERE_IS_NO_SAVED_DATA_YET = "There is no saved data yet!";
 
-    private final ChoicesController choicesService;
+    private final ChoicesQueryDao choicesQueryDao;
 
     private final DisplayWindow window;
     private Composite mainComposite;
 
     public SeeLastUsersChoicesWindow() {
         window = new DisplayWindow();
-        choicesService = new ChoicesController(FORM_FILE_TEXT + TEXT_EXTENSION);
+        choicesQueryDao = new InMemoryChoicesQueryDao();
         createComposites();
         addListeners();
         window.setTitle(USERS_LAST_CHOICES);
@@ -42,6 +37,8 @@ public class SeeLastUsersChoicesWindow implements SeeLastUserChoices {
 
     private void createComposites() {
         mainComposite = window.getMainComposite();
+        createMainCompositeLayout();
+        createTitles();
     }
 
     private void addListeners() {
@@ -49,24 +46,27 @@ public class SeeLastUsersChoicesWindow implements SeeLastUserChoices {
             @Override
             public void mouseUp(MouseEvent mouseEvent) {
                 window.dispose();
-                UserServiceMenu userServiceWindow = new UserServiceWindow();
+                UserServiceWindow userServiceWindow = new UserServiceWindow();
                 userServiceWindow.display();
             }
         });
     }
 
-    @Override
     public void display() {
-        createMainCompositeLayout();
-        createTitles();
+        createHistoryComposite();
+        mainComposite.layout();
+        window.getResetBtn().setVisible(true);
+        window.getOkBttn().setVisible(false);
+        window.open();
+    }
 
-        List<TicketHistory> choicesHistory = choicesService.loadChoicesHistory();
+    private void createHistoryComposite() {
+        LoadAllSavedChoices loadAllSavedChoices = new LoadAllSavedChoices(choicesQueryDao);
+        List<TicketHistory> choicesHistory = loadAllSavedChoices.execute();
+
         for (TicketHistory history : choicesHistory) {
             populateLabels(history);
         }
-        mainComposite.layout();
-        window.getResetBtn().setVisible(true);
-        window.open();
     }
 
     private void createMainCompositeLayout() {
@@ -96,18 +96,5 @@ public class SeeLastUsersChoicesWindow implements SeeLastUserChoices {
         lastChoiceLabel.setText(history.getStateDateList().get(history.getStateDateList().size() - 1).getState());
         Label lastDateChoiceLabel = new Label(mainComposite, SWT.NONE);
         lastDateChoiceLabel.setText(history.getStateDateList().get(history.getStateDateList().size() - 1).getDate());
-    }
-
-    public boolean isDataExist() {
-        return choicesService.isDataExist();
-    }
-
-    @Override
-    public void displayNonExistentDataError() {
-        MessageBox dialog =
-                new MessageBox(window.getShell(), SWT.OK);
-        dialog.setText(NON_EXISTENT_DATA);
-        dialog.setMessage(THERE_IS_NO_SAVED_DATA_YET);
-        dialog.open();
     }
 }

@@ -1,34 +1,24 @@
 package com.elbarcani.archi.user.infrastructure.controller;
 
-import com.elbarcani.archi.user.domain.Ticket;
 import com.elbarcani.archi.user.domain.User;
-import com.elbarcani.archi.user.infrastructure.dto.TicketDto;
-import com.elbarcani.archi.user.infrastructure.dto.UserDto;
-import com.elbarcani.archi.user.infrastructure.dto.http.HttpTicketDto;
-import com.elbarcani.archi.user.infrastructure.dto.http.HttpUserDto;
-
-import java.util.List;
+import com.elbarcani.archi.user.domain.UserDao;
+import com.elbarcani.archi.user.infrastructure.dao.HttpUserDao;
 
 public class UserController {
 
     int userId;
-    UserDto userDto;
+    UserDao userDao;
 
     public UserController(int userId) {
         this.userId = userId;
-        userDto = new HttpUserDto(userId);
+        userDao = new HttpUserDao(userId);
     }
 
     public User getUserById() {
-        return userDto.getUserDto();
+        return userDao.findUser();
     }
 
     public boolean isUserExist() {
-        return userDto.isUserExist();
-    }
-
-    public List<Ticket> getOrderByUser() {
-        TicketDto ticketDto = new HttpTicketDto(userId);
-        return ticketDto.getOrderDtoByUser();
+        return userDao.isUserExist();
     }
 }

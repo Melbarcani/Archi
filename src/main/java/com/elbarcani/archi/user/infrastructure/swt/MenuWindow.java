@@ -2,16 +2,14 @@ package com.elbarcani.archi.user.infrastructure.swt;
 
 import com.elbarcani.archi.infrastructure.swt.DisplayWindow;
 import com.elbarcani.archi.user.domain.User;
-import com.elbarcani.archi.user.infrastructure.controller.UserController;
-import com.elbarcani.archi.user.use_case.ChooseInMenu;
-import com.elbarcani.archi.user.use_case.SeeOldChoices;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.MessageBox;
 
-public class MenuWindow extends DisplayWindow implements ChooseInMenu {
+public class MenuWindow extends DisplayWindow {
 
     private static final String SEE_OLD_CHOICE = "See old choice";
     private static final String ADD_OR_EDIT_YOUR_CHOICES = "Add or edit your choices";
@@ -21,7 +19,11 @@ public class MenuWindow extends DisplayWindow implements ChooseInMenu {
     private Button seeOldChoicesBtn;
 
     private User user;
-    private UserController userController;
+
+
+    public MenuWindow(User user) {
+        this.user = user;
+    }
 
     @Override
     protected void createControls() {
@@ -29,15 +31,8 @@ public class MenuWindow extends DisplayWindow implements ChooseInMenu {
         initTexts();
     }
 
-    @Override
-    public void displayMenu(){
-        open();
-    }
-
-    @Override
-    public void setUser(User user) {
-        this.user = user;
-        userController = new UserController(user.getId());
+    public void open() {
+        super.open();
     }
 
     @Override
@@ -73,32 +68,31 @@ public class MenuWindow extends DisplayWindow implements ChooseInMenu {
         });
     }
 
-    @Override
-    public void seeOldChoicesButtonAction() {
+    private void seeOldChoicesButtonAction() {
         dispose();
-        SeeOldChoices oldChoicesWindow = new SeeOldChoicesWindow(user);
-        if (oldChoicesWindow.isFormExist()) {
-            oldChoicesWindow.display();
-        } else {
-            oldChoicesWindow.createNonExistentFormComposite();
-        }
+        SeeOldChoicesWindow oldChoicesWindow = new SeeOldChoicesWindow(user);
+        oldChoicesWindow.open();
+
     }
 
-    @Override
-    public void showOrderButtonAction() {
-        dispose();
-        ShowOrderWindow displayWindow = new ShowOrderWindow(user);
-        displayWindow.display(userController);
+    private void createNonExistentFormComposite() {
+        MessageBox dialog =
+                new MessageBox(getShell(), SWT.OK);
+        dialog.setText("Non existent form");
+        dialog.setMessage("You don't have filled your form yet!");
+        dialog.open();
     }
 
-    @Override
-    public void editChoiceButtonAction() {
+    private void showOrderButtonAction() {
+        dispose();
+        ShowOrderWindow displayOrderWindow = new ShowOrderWindow(user);
+        displayOrderWindow.open();
+    }
+
+    private void editChoiceButtonAction() {
         dispose();
         EditChoiceWindow editWindow = new EditChoiceWindow(user);
-        if (!editWindow.isFormExist()) {
-            editWindow.createNewForm(userController);
-        }
-        editWindow.display(userController);
+        editWindow.display();
     }
 
     protected void initTexts() {

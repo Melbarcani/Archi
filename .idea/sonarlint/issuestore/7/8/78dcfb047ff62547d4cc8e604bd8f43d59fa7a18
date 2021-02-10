@@ -1,0 +1,16 @@
+
+D
+java:S1172š"-Remove this unused method parameter "parent".(Ç®Ù
+	java:S116/"jRename this field "DEFAULT_BOTTOM_BACKGROUND_COLOR" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ê—‚Ó
+3
+java:S1116Ğ"Remove this empty statement.(©¢Ãª
+|	java:S1161"gRename this field "DEFAULT_TOP_BACKGROUND_COLOR" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ùœĞ…
+R
+java:S1117 ";Rename "display" which hides the field declared at line 19.(äÈÜà
+˜
+java:S1186Ğ"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(©¢Ãª
+}	java:S1160"hRename this field "DEFAULT_MAIN_BACKGROUND_COLOR" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(óŸ•‚
+ƒ	java:S1162"iRename this field "DEFAULT_TITLE_FOREGROUND_COLOR" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ë¤î¯şÿÿÿÿ
+y
+java:S1128"^Remove this unused import 'com.elbarcani.archi.user.infrastructure.controller.UserController'.(ğÑŸ­ùÿÿÿÿ
+	java:S116."gRename this field "DEFAULT_BAR_BACKGROUND_COLOR" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Æÿéüÿÿÿÿ

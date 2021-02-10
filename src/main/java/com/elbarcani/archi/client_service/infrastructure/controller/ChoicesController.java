@@ -1,8 +1,8 @@
 package com.elbarcani.archi.client_service.infrastructure.controller;
 
 import com.elbarcani.archi.client_service.domaine.TicketHistory;
-import com.elbarcani.archi.client_service.infrastructure.dao.ChoicesCommandDao;
-import com.elbarcani.archi.client_service.infrastructure.dao.ChoicesQueryDao;
+import com.elbarcani.archi.client_service.domaine.ChoicesCommandDao;
+import com.elbarcani.archi.client_service.domaine.ChoicesQueryDao;
 import com.elbarcani.archi.client_service.infrastructure.dao.InMemoryChoicesCommandDao;
 import com.elbarcani.archi.client_service.infrastructure.dao.InMemoryChoicesQueryDao;
 
@@ -13,8 +13,8 @@ public class ChoicesController {
     private final ChoicesCommandDao choicesCommandDao;
 
     public ChoicesController(String fileName) {
-        choicesQueryDao = new InMemoryChoicesQueryDao(fileName);
-        choicesCommandDao = new InMemoryChoicesCommandDao(fileName);
+        choicesQueryDao = new InMemoryChoicesQueryDao();
+        choicesCommandDao = new InMemoryChoicesCommandDao();
     }
 
     public boolean isDataExist(){

@@ -1,23 +1,34 @@
 package com.elbarcani.archi.client_service.infrastructure.swt;
 
-import com.elbarcani.archi.client_service.use_case.DeleteAllChoices;
-import com.elbarcani.archi.client_service.use_case.UserServiceMenu;
+import com.elbarcani.archi.client_service.domaine.ChoicesQueryDao;
+import com.elbarcani.archi.client_service.infrastructure.dao.InMemoryChoicesQueryDao;
+import com.elbarcani.archi.client_service.use_case.CheckDataExistence;
 import com.elbarcani.archi.infrastructure.swt.DisplayWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.MessageBox;
 
-public class UserServiceWindow extends DisplayWindow implements UserServiceMenu {
-
+public class UserServiceWindow extends DisplayWindow {
 
     private static final String SEE_ALL_CHOICES = "See all choices";
     private static final String SEE_ALL_USERS_LAST_CHOICES = "See all users last choices";
     private static final String DELETE_ALL_USERS_CHOICES = "Delete all users choices";
+    private static final String NON_EXISTENT_DATA = "Non existent data";
+    private static final String THERE_IS_NO_SAVED_DATA_YET = "There is no saved data yet!";
     private Button seeAllChoicesBtn;
     private Button seeLastChoicesBtn;
     private Button deleteAllChoicesBtn;
+
+    private ChoicesQueryDao choicesQueryDao;
+    private CheckDataExistence checkDataExistence;
+
+    public UserServiceWindow() {
+        choicesQueryDao = new InMemoryChoicesQueryDao();
+        checkDataExistence = new CheckDataExistence(choicesQueryDao);
+    }
 
     @Override
     protected void createControls() {
@@ -25,8 +36,8 @@ public class UserServiceWindow extends DisplayWindow implements UserServiceMenu 
         initTexts();
     }
 
-    @Override
     public void display() {
+        //isAlertCreated : check si le fichier existe puis afficher msg
         open();
     }
 
@@ -63,33 +74,36 @@ public class UserServiceWindow extends DisplayWindow implements UserServiceMenu 
         });
     }
 
-    @Override
     public void deleteAllChoices() {
         dispose();
-        DeleteAllChoices deleteWindow = new DeleteAllChoicesWindow();
-        deleteWindow.display();
+        DeleteAllChoicesWindow deleteWindow = new DeleteAllChoicesWindow();
+        deleteWindow.open();
     }
 
-    @Override
     public void seeAllSavedChoices() {
-        dispose();
-        SeeAllSavedChoicesWindow seeAllSavedChoicesWindow = new SeeAllSavedChoicesWindow();
-
-        if (!seeAllSavedChoicesWindow.isDataExist()) {
-            seeAllSavedChoicesWindow.displayNonExistentDataError();
+        if (checkDataExistence.execute()) {
+            dispose();
+            SeeAllSavedChoicesWindow seeAllSavedChoicesWindow = new SeeAllSavedChoicesWindow();
+            seeAllSavedChoicesWindow.open();
         }
-        seeAllSavedChoicesWindow.display();
+        displayNonExistentDataError();
     }
 
-    @Override
     public void seeLastUsersChoices() {
-        dispose();
-        SeeLastUsersChoicesWindow displayWindow = new SeeLastUsersChoicesWindow();
-
-        if (!displayWindow.isDataExist()) {
-            displayWindow.displayNonExistentDataError();
+        if (checkDataExistence.execute()) {
+            dispose();
+            SeeLastUsersChoicesWindow displayWindow = new SeeLastUsersChoicesWindow();
+            displayWindow.display();
         }
-        displayWindow.display();
+        displayNonExistentDataError();
+    }
+
+    private void displayNonExistentDataError() {
+        MessageBox dialog =
+                new MessageBox(getShell(), SWT.OK);
+        dialog.setText(NON_EXISTENT_DATA);
+        dialog.setMessage(THERE_IS_NO_SAVED_DATA_YET);
+        dialog.open();
     }
 
     protected void initTexts() {

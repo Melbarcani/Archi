@@ -135,10 +135,6 @@ public class DisplayWindow {
         return okBttn;
     }
 
-    public Button getCancelBttn() {
-        return cancelBttn;
-    }
-
     public void createButtonComposite(Composite parent) {
         buttonComposite = new Composite(parent, SWT.NONE);
 

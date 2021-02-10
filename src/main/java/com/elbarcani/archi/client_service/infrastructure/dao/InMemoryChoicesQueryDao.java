@@ -1,6 +1,7 @@
 package com.elbarcani.archi.client_service.infrastructure.dao;
 
 import com.elbarcani.archi.client_service.domaine.ChoiceDate;
+import com.elbarcani.archi.client_service.domaine.ChoicesQueryDao;
 import com.elbarcani.archi.client_service.domaine.TicketHistory;
 
 import java.io.BufferedReader;
@@ -14,11 +15,13 @@ import java.util.*;
 
 public class InMemoryChoicesQueryDao implements ChoicesQueryDao {
     public static final String SEPARATOR = ",";
+    public static final String FORM_FILE_TEXT = "form_file";
+    public static final String TEXT_EXTENSION = ".txt";
 
-    private final String fileName;
+    private String fileName;
 
-    public InMemoryChoicesQueryDao(String fileName) {
-        this.fileName = fileName;
+    public InMemoryChoicesQueryDao() {
+        fileName = FORM_FILE_TEXT+TEXT_EXTENSION;
     }
 
     @Override

@@ -1,10 +1,10 @@
 package com.elbarcani.archi.client_service.infrastructure.swt;
 
 import com.elbarcani.archi.client_service.domaine.ChoiceDate;
+import com.elbarcani.archi.client_service.domaine.ChoicesQueryDao;
 import com.elbarcani.archi.client_service.domaine.TicketHistory;
-import com.elbarcani.archi.client_service.infrastructure.controller.ChoicesController;
-import com.elbarcani.archi.client_service.use_case.UserServiceMenu;
-import com.elbarcani.archi.client_service.use_case.SeeAllSavedChoices;
+import com.elbarcani.archi.client_service.infrastructure.dao.InMemoryChoicesQueryDao;
+import com.elbarcani.archi.client_service.use_case.LoadAllSavedChoices;
 import com.elbarcani.archi.infrastructure.swt.DisplayWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
@@ -12,63 +12,44 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
 
 import java.util.List;
 
-public class SeeAllSavedChoicesWindow implements SeeAllSavedChoices {
+public class SeeAllSavedChoicesWindow {
 
     private static final String USER_LABEL = "User : ";
     private static final String TICKET_LABEL = "Ticket : ";
-    private static final String NON_EXISTENT_DATA = "Non existent data";
-    private static final String THERE_IS_NO_SAVED_DATA_YET = "There is no saved data yet!";
-    public static final String FORM_FILE_TEXT = "form_file";
-    public static final String TEXT_EXTENSION = ".txt";
     private static final String ALL_USERS_CHOICES = "All Users Choices";
 
     private final DisplayWindow window;
     private Composite mainComposite;
 
-    private final ChoicesController choicesController;
+    private final ChoicesQueryDao choicesQueryDao;
     private List<TicketHistory> choicesHistoryList;
 
     public SeeAllSavedChoicesWindow() {
         window= new DisplayWindow();
-        choicesController = new ChoicesController(FORM_FILE_TEXT + TEXT_EXTENSION);
+        choicesQueryDao = new InMemoryChoicesQueryDao();
+        loadAllSavedChoices();
         createComposites();
         addListeners();
-        loadAllSavedChoices();
         window.setTitle(ALL_USERS_CHOICES);
     }
 
-    @Override
     public void loadAllSavedChoices() {
-        choicesHistoryList = choicesController.loadChoicesHistory();
-        createHistoryComposite();
+        LoadAllSavedChoices loadAllChoices = new LoadAllSavedChoices(choicesQueryDao);
+        choicesHistoryList = loadAllChoices.execute();
     }
 
-    @Override
-    public boolean isDataExist() {
-        return choicesController.isDataExist();
-    }
-
-    @Override
-    public void displayNonExistentDataError() {
-        MessageBox dialog =
-                new MessageBox(window.getShell(), SWT.OK);
-        dialog.setText(NON_EXISTENT_DATA);
-        dialog.setMessage(THERE_IS_NO_SAVED_DATA_YET);
-        dialog.open();
-    }
-
-    @Override
-    public void display() {
+    public void open() {
         window.getResetBtn().setVisible(true);
+        window.getOkBttn().setVisible(false);
         window.open();
     }
 
     private void createComposites() {
         mainComposite = window.getMainComposite();
+        createHistoryComposite();
     }
 
     private void addListeners() {
@@ -82,7 +63,7 @@ public class SeeAllSavedChoicesWindow implements SeeAllSavedChoices {
 
     private void returnToMenu() {
         window.dispose();
-        UserServiceMenu userServiceWindow = new UserServiceWindow();
+        UserServiceWindow userServiceWindow = new UserServiceWindow();
         userServiceWindow.display();
     }
 
