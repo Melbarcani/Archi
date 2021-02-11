@@ -1,6 +1,6 @@
 package com.elbarcani.archi.user.infrastructure.controller;
 
-import com.elbarcani.archi.AbstractMock;
+import com.elbarcani.archi.user.use_case.AbstractUserMock;
 import com.elbarcani.archi.user.domain.Form;
 import com.elbarcani.archi.user.domain.Ticket;
 
@@ -13,7 +13,7 @@ import java.util.Map;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class FormControllerMock extends AbstractMock {
+public class FormControllerMock extends AbstractUserMock {
 
     public static final String EXISTENT_FILE_NAME = "fileNameTest.txt";
     public static final int REGULAR_USER_ID = 123;

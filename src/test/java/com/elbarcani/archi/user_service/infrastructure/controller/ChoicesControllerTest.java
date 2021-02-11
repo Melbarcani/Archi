@@ -2,7 +2,7 @@ package com.elbarcani.archi.user_service.infrastructure.controller;
 
 import com.elbarcani.archi.client_service.domaine.TicketHistory;
 import com.elbarcani.archi.client_service.infrastructure.controller.ChoicesController;
-import com.elbarcani.archi.AbstractTest;
+import com.elbarcani.archi.user.use_case.AbstractUserTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +10,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ChoicesControllerTest extends AbstractTest<ChoicesControllerMock, ChoicesController> {
+public class ChoicesControllerTest extends AbstractUserTest<ChoicesControllerMock, ChoicesController> {
 
     @Test
     @DisplayName("loadChoicesHistory and isDataExist methods")

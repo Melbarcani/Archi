@@ -4,8 +4,10 @@ import com.elbarcani.archi.infrastructure.swt.DisplayWindow;
 import com.elbarcani.archi.user.domain.*;
 import com.elbarcani.archi.user.infrastructure.dao.HttpTicketDao;
 import com.elbarcani.archi.user.infrastructure.dao.InMemoryFormDao;
+import com.elbarcani.archi.user.infrastructure.service.ConsoleEmail;
 import com.elbarcani.archi.user.use_case.EditForm;
 import com.elbarcani.archi.user.use_case.LoadForm;
+import com.elbarcani.archi.user.use_case.SendEmailAfterAddOrEdit;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -93,13 +95,18 @@ public class EditChoiceWindow {
             if (incompleteFormLabel != null) {
                 incompleteFormLabel.setVisible(false);
             }
-            addOrEditForm.execute(form);
-
-            /*if (sendEmail(user)) {
-                openSuccessMessageDialog();
-            }*/
-            returnToUserChoices();
+            addFormAction();
         }
+    }
+
+    private void addFormAction() {
+        addOrEditForm.execute(form);
+        Email email = new ConsoleEmail(user);
+        SendEmailAfterAddOrEdit sendEmail = new SendEmailAfterAddOrEdit(email);
+        if(sendEmail.execute()){
+            openSuccessMessageDialog();
+        }
+        returnToUserChoices();
     }
 
     private void populateTicketLabels(Ticket ticket, Composite ticketComposite) {
@@ -135,12 +142,6 @@ public class EditChoiceWindow {
         incompleteFormLabel.setText("Form Incomplete");
         window.getButtonComposite().layout();
     }
-
-    /*public boolean sendEmail(User user) {
-        Email emailService = new ConsoleEmailService(user);
-        emailService.send();
-        return emailService.isSent();
-    }*/
 
     private void addListeners() {
         window.getOkBttn().addMouseListener(new MouseAdapter() {

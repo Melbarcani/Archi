@@ -1,6 +1,5 @@
 package com.elbarcani.archi.infrastructure.swt;
 
-import com.elbarcani.archi.user.infrastructure.controller.UserController;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;

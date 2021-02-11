@@ -1,7 +1,6 @@
 package com.elbarcani.archi.user.infrastructure.controller;
 
-import com.elbarcani.archi.AbstractTest;
-import com.elbarcani.archi.user.domain.Ticket;
+import com.elbarcani.archi.user.use_case.AbstractUserTest;
 import com.elbarcani.archi.user.domain.User;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,14 +10,12 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
-import java.util.List;
+public class UserControllerTest  {
 
-public class UserControllerTest extends AbstractTest<UserControllerMock, UserController> {
-
-    @Test
+    /*@Test
     @DisplayName("getUserById")
     public void testGetUserByIdMethod() {
-        User user = mock.getUser();
+        User user = mock.getRegularUser();
         if (objectToTest.isUserExist()) {
             user = objectToTest.getUserById();
         }
@@ -28,7 +25,7 @@ public class UserControllerTest extends AbstractTest<UserControllerMock, UserCon
         if (!objectToTest.isUserExist()) {
             assertThrows(Exception.class, () -> objectToTest.getUserById());
         }
-    }
+    }*/
 
     /*@Test
     @DisplayName("getOrderByUser")
@@ -45,13 +42,5 @@ public class UserControllerTest extends AbstractTest<UserControllerMock, UserCon
     // Create method
     //====================================================================================================
 
-    @Override
-    protected UserControllerMock createMock() {
-        return new UserControllerMock();
-    }
 
-    @Override
-    protected UserController createObjectToTest() {
-        return new UserController(UserControllerMock.REGULAR_USER_ID);
-    }
 }

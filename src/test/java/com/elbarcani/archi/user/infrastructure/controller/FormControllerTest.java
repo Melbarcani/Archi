@@ -1,6 +1,6 @@
 package com.elbarcani.archi.user.infrastructure.controller;
 
-import com.elbarcani.archi.AbstractTest;
+import com.elbarcani.archi.user.use_case.AbstractUserTest;
 import com.elbarcani.archi.user.domain.Form;
 import com.elbarcani.archi.user.domain.TicketStateHistory;
 import org.assertj.core.api.Assertions;
@@ -11,11 +11,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class FormControllerTest extends AbstractTest<FormControllerMock, FormController> {
+class FormControllerTest extends AbstractUserTest<FormControllerMock, FormController> {
 
     @Test
     @DisplayName("saveForm(int userId) and loadForm()methods")
-    public void testSaveFormAndLoadFormMethods(){
+    void testSaveFormAndLoadFormMethods(){
         objectToTest.saveForm(mock.getRegularForm(), FormControllerMock.REGULAR_USER_ID);
         assertTrue(objectToTest.isFormDataExist());
 
@@ -28,7 +28,7 @@ public class FormControllerTest extends AbstractTest<FormControllerMock, FormCon
 
     @Test
     @DisplayName("saveForm(int userId) in existing file")
-    public void testSaveFormWithExistingFile(){
+    void testSaveFormWithExistingFile(){
         // Given existing data form user
         objectToTest.saveForm(mock.getRegularForm(), FormControllerMock.REGULAR_USER_ID);
         assertTrue(objectToTest.isFormDataExist());

@@ -3,7 +3,6 @@ package com.elbarcani.archi.user.infrastructure.swt;
 import com.elbarcani.archi.infrastructure.swt.DisplayWindow;
 import com.elbarcani.archi.user.domain.User;
 import com.elbarcani.archi.user.domain.UserDao;
-import com.elbarcani.archi.user.infrastructure.controller.UserController;
 import com.elbarcani.archi.user.infrastructure.dao.HttpUserDao;
 import com.elbarcani.archi.user.use_case.LoadUser;
 import org.eclipse.swt.SWT;

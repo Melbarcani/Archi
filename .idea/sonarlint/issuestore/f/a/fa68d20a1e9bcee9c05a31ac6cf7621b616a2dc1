@@ -1,0 +1,9 @@
+
+W
+java:S1854	"<Remove this useless assignment to local variable "launcher".(òÄ§šúÿÿÿÿ
+‡
+java:S1130"lRemove the declaration of thrown exception 'java.io.IOException', as it cannot be thrown from method's body.(àÒşüøÿÿÿÿ
+’
+java:S1130"wRemove the declaration of thrown exception 'java.lang.InterruptedException', as it cannot be thrown from method's body.(àÒşüøÿÿÿÿ
+H
+java:S1481	"-Remove this unused "launcher" local variable.(òÄ§šúÿÿÿÿ

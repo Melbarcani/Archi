@@ -1,10 +1,10 @@
 package com.elbarcani.archi.user.infrastructure.controller;
 
-import com.elbarcani.archi.AbstractMock;
+import com.elbarcani.archi.user.use_case.AbstractUserMock;
 import com.elbarcani.archi.user.domain.User;
 import org.mockito.Mockito;
 
-public class UserControllerMock extends AbstractMock {
+public class UserControllerMock extends AbstractUserMock {
     public static final int REGULAR_USER_ID = 123;
     public static final int REGULAR_TICKETS_NUMBER = 6;
     public static final int FIRST_TICKET_ID = 1;
@@ -20,7 +20,7 @@ public class UserControllerMock extends AbstractMock {
         return Mockito.mock(User.class);
     }
 
-    public User getUser(){
+    public User getRegularUser(){
         return user;
     }
 }

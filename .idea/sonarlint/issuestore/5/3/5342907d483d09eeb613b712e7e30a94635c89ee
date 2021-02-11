@@ -1,0 +1,6 @@
+
+N
+java:S1068"1Remove this unused "errorFileName" private field.(Ùç¬Ã8çÌù.
+L
+java:S1068"/Remove this unused "consoleCopy" private field.(ê“öñ8º—‚ù.
+U	java:S106"9Replace this use of System.out or System.err by a logger.(éœØØ8úŒƒù.

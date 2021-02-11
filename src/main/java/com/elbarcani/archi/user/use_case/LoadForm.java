@@ -19,8 +19,8 @@ public class LoadForm {
     }
 
     public Form execute() {
-        if(formDao.isFormExist()){
-            return formDao.loadForm(user.getId());
+        if(formDao.isFormExist() && !formDao.loadForm(user.getId()).getTicketsList().isEmpty()){
+             return formDao.loadForm(user.getId());
         }
         return new Form(new HashMap<>(), ticketDao.getOrderDtoByUser());
     }

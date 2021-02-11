@@ -1,12 +1,12 @@
 package com.elbarcani.archi.user_service.infrastructure.controller;
 
-import com.elbarcani.archi.AbstractMock;
+import com.elbarcani.archi.user.use_case.AbstractUserMock;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class ChoicesControllerMock extends AbstractMock {
+public class ChoicesControllerMock extends AbstractUserMock {
 
     private final String TICKET_ID = "1";
     private final String USER_ID = "123";
