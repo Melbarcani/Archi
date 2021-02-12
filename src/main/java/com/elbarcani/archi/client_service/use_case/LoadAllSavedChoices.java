@@ -3,6 +3,7 @@ package com.elbarcani.archi.client_service.use_case;
 import com.elbarcani.archi.client_service.domaine.TicketHistory;
 import com.elbarcani.archi.client_service.domaine.ChoicesQueryDao;
 
+import java.util.Collections;
 import java.util.List;
 
 public class LoadAllSavedChoices {
@@ -13,6 +14,8 @@ public class LoadAllSavedChoices {
     }
 
     public List<TicketHistory> execute(){
-        return choicesQueryDao.loadTicketsHistory();
+        if(choicesQueryDao.isDataExist())
+            return choicesQueryDao.loadTicketsHistory();
+        return Collections.emptyList();
     }
 }

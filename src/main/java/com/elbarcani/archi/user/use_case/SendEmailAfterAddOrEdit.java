@@ -11,7 +11,6 @@ public class SendEmailAfterAddOrEdit {
     }
 
     public boolean execute(){
-        ;
         if(email.send()){
             email.emailNotSentAction();
             return false;

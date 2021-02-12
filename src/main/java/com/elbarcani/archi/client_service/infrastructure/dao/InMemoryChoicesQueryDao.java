@@ -24,6 +24,10 @@ public class InMemoryChoicesQueryDao implements ChoicesQueryDao {
         fileName = FORM_FILE_TEXT+TEXT_EXTENSION;
     }
 
+    public InMemoryChoicesQueryDao(String fileName) {
+        this.fileName = fileName;
+    }
+
     @Override
     public boolean isDataExist() {
         Path path = Paths.get(fileName);

@@ -35,8 +35,6 @@ asrc/main/java/com/elbarcani/archi/client_service/infrastructure/swt/SeeAllSaved
 Zsrc/main/java/com/elbarcani/archi/client_service/infrastructure/swt/UserServiceWindow.java,a\a\aa9d2bcb4f2a88ed1c9a7fbdfa2459733454e508
 
 Osrc/main/java/com/elbarcani/archi/user/infrastructure/swt/EditChoiceWindow.java,5\9\5955f191fc31baf4eb5731ad649feb59a34ae09b
-†
-Vsrc/main/java/com/elbarcani/archi/user/infrastructure/service/ConsoleEmailService.java,4\0\40ce4dc73d096b5db70939d7489c7c5d12936cb9
 x
 Hsrc/main/java/com/elbarcani/archi/client_service/domaine/ChoiceDate.java,1\6\16b9d6d9b20763c69eeb6ece41e248e3bfbea182
 t
@@ -55,8 +53,6 @@ Y
 )src/main/java/com/elbarcani/Launcher.java,1\d\1d19b97fd6ce63edefc0d5bac39b5452dcb2e780
 y
 Isrc/main/java/com/elbarcani/archi/user/infrastructure/swt/UserWindow.java,e\c\ec03888e900f6a039ca005985d52dfdae6c4dc35
-„
-Tsrc/main/java/com/elbarcani/archi/user/infrastructure/controller/UserController.java,1\e\1e26ff27fc20db3d05dfc4a5399c1b619dfa9400
 ~
 Nsrc/main/java/com/elbarcani/archi/user/infrastructure/dao/InMemoryFormDao.java,a\0\a082ed0bd311231f2ba0c29ee6dcb8cca5ba4a39
 z
@@ -81,8 +77,6 @@ Xsrc/test/java/com/elbarcani/archi/user/infrastructure/controller/UserController
 form_file2.txt,3\2\328b148753245e5939a3849d492ecebef18e8422
 ˆ
 Xsrc/test/java/com/elbarcani/archi/user/infrastructure/controller/FormControllerMock.java,8\b\8b22c1a47a4cdc25283d576ecada84a9065eeca8
-c
-3src/test/java/com/elbarcani/archi/AbstractMock.java,9\b\9b6235c72518ad344f374e34df045c88c05a4a61
 
 Osrc/main/java/com/elbarcani/archi/client_service/domaine/ChoicesCommandDao.java,b\4\b4012dfbc4d8f4c4308df909e95bf3ab98420df5
 }
@@ -93,8 +87,6 @@ csrc/test/java/com/elbarcani/archi/user_service/infrastructure/controller/Choice
 csrc/test/java/com/elbarcani/archi/user_service/infrastructure/controller/ChoicesControllerMock.java,4\9\49c8b3464899269621860d1685eddb91be45352b
 |
 Lsrc/main/java/com/elbarcani/archi/user/use_case/SendEmailAfterAddOrEdit.java,d\a\da34cd56ad2ef888e58381767b3439613aa28f75
-c
-3src/test/java/com/elbarcani/archi/AbstractTest.java,4\5\45358ddef942d0d0159d220add41f01394da6555
 ˆ
 Xsrc/test/java/com/elbarcani/archi/user/infrastructure/controller/FormControllerTest.java,9\4\948f7f557fa36c865a1e79b840f61cfa35fa2a21
 ˆ

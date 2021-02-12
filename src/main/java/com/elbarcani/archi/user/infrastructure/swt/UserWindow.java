@@ -50,7 +50,7 @@ public class UserWindow extends DisplayWindow {
                         this::openUserWindow, this::openFailMessageDialog
                 );
             } catch (NumberFormatException e) {
-                e.printStackTrace();
+                openFailNumberMessageDialog();
             }
         }
     }
@@ -66,6 +66,14 @@ public class UserWindow extends DisplayWindow {
                 new MessageBox(getShell(), SWT.OK);
         dialog.setText("Something wrong");
         dialog.setMessage("This user doesn't exit or connection failed");
+        dialog.open();
+    }
+
+    private void openFailNumberMessageDialog() {
+        MessageBox dialog =
+                new MessageBox(getShell(), SWT.OK);
+        dialog.setText("Something wrong");
+        dialog.setMessage("Please enter a number");
         dialog.open();
     }
 }

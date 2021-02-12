@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Label;
 import java.util.List;
 
 public class SeeOldChoicesWindow {
+    private static final String NO_DATA_MSG = "There is no registred data for you";
     private final DisplayWindow window;
     private Composite mainComposite;
     private List<TicketStateHistory> formHistoryList;
@@ -62,7 +63,15 @@ public class SeeOldChoicesWindow {
         for (TicketStateHistory stateHistory : formHistoryList) {
             createTicketHistoryComposite(mainComposite, stateHistory);
         }
+        noDataAction();
         mainComposite.layout();
+    }
+
+    private void noDataAction() {
+        if (formHistoryList.isEmpty()) {
+            Label noDataLbl = new Label(mainComposite, SWT.NONE);
+            noDataLbl.setText(NO_DATA_MSG);
+        }
     }
 
     private void createTicketHistoryComposite(Composite parent, TicketStateHistory stateHistory) {
