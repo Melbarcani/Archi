@@ -3,6 +3,7 @@ package com.elbarcani.archi.client_service.infrastructure.swt;
 import com.elbarcani.archi.client_service.domaine.ChoicesQueryDao;
 import com.elbarcani.archi.client_service.infrastructure.dao.InMemoryChoicesQueryDao;
 import com.elbarcani.archi.client_service.use_case.LoadAllSavedChoices;
+import com.elbarcani.archi.client_service.use_case.LoadLastUserChoices;
 import com.elbarcani.archi.infrastructure.swt.DisplayWindow;
 import com.elbarcani.archi.client_service.domaine.TicketHistory;
 
@@ -63,7 +64,7 @@ public class SeeLastUsersChoicesWindow {
     }
 
     private void createHistoryComposite() {
-        LoadAllSavedChoices loadAllSavedChoices = new LoadAllSavedChoices(choicesQueryDao);
+        LoadLastUserChoices loadAllSavedChoices = new LoadLastUserChoices(choicesQueryDao);
         List<TicketHistory> choicesHistory = loadAllSavedChoices.execute();
 
         for (TicketHistory history : choicesHistory) {

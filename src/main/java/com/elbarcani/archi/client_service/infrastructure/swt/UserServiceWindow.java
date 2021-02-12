@@ -34,7 +34,6 @@ public class UserServiceWindow extends DisplayWindow {
     }
 
     public void display() {
-        //isAlertCreated : check si le fichier existe puis afficher msg
         open();
     }
 
