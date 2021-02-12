@@ -2,7 +2,6 @@ package com.elbarcani.archi.client_service.infrastructure.swt;
 
 import com.elbarcani.archi.client_service.domaine.ChoicesQueryDao;
 import com.elbarcani.archi.client_service.infrastructure.dao.InMemoryChoicesQueryDao;
-import com.elbarcani.archi.client_service.use_case.CheckDataExistence;
 import com.elbarcani.archi.infrastructure.swt.DisplayWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
@@ -23,11 +22,9 @@ public class UserServiceWindow extends DisplayWindow {
     private Button deleteAllChoicesBtn;
 
     private ChoicesQueryDao choicesQueryDao;
-    private CheckDataExistence checkDataExistence;
 
     public UserServiceWindow() {
         choicesQueryDao = new InMemoryChoicesQueryDao();
-        checkDataExistence = new CheckDataExistence(choicesQueryDao);
     }
 
     @Override
@@ -81,21 +78,15 @@ public class UserServiceWindow extends DisplayWindow {
     }
 
     public void seeAllSavedChoices() {
-        if (checkDataExistence.execute()) {
             dispose();
             SeeAllSavedChoicesWindow seeAllSavedChoicesWindow = new SeeAllSavedChoicesWindow();
             seeAllSavedChoicesWindow.open();
-        }
-        displayNonExistentDataError();
     }
 
     public void seeLastUsersChoices() {
-        if (checkDataExistence.execute()) {
             dispose();
             SeeLastUsersChoicesWindow displayWindow = new SeeLastUsersChoicesWindow();
             displayWindow.display();
-        }
-        displayNonExistentDataError();
     }
 
     private void displayNonExistentDataError() {

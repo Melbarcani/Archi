@@ -72,7 +72,6 @@ public class MenuWindow extends DisplayWindow {
         dispose();
         SeeOldChoicesWindow oldChoicesWindow = new SeeOldChoicesWindow(user);
         oldChoicesWindow.open();
-
     }
 
     private void createNonExistentFormComposite() {
@@ -92,7 +91,7 @@ public class MenuWindow extends DisplayWindow {
     private void editChoiceButtonAction() {
         dispose();
         EditChoiceWindow editWindow = new EditChoiceWindow(user);
-        editWindow.display();
+        editWindow.open();
     }
 
     protected void initTexts() {

@@ -16,6 +16,8 @@ import org.eclipse.swt.widgets.Label;
 import java.util.List;
 
 public class SeeLastUsersChoicesWindow {
+    private static final String NO_DATA_MSG = "There is no registred data";
+
     private static final String USERS_LAST_CHOICES = "Users last choices";
     private static final String USER_ID = "userId";
     private static final String ANSWER = "Answer";
@@ -67,6 +69,16 @@ public class SeeLastUsersChoicesWindow {
         for (TicketHistory history : choicesHistory) {
             populateLabels(history);
         }
+        noDataAction(choicesHistory);
+    }
+
+
+    private void noDataAction(List<TicketHistory> choicesHistory) {
+        if(choicesHistory.isEmpty()){
+            Label noDataLbl = new Label(mainComposite, SWT.NONE);
+            noDataLbl.setText(NO_DATA_MSG);
+        }
+
     }
 
     private void createMainCompositeLayout() {

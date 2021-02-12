@@ -52,7 +52,7 @@ public class EditChoiceWindow {
         ticketDao = new HttpTicketDao(user.getId());
     }
 
-    public void display() {
+    public void open() {
         window.setTitle(String.valueOf(user.getId()));
         form = loadForm.execute();
 

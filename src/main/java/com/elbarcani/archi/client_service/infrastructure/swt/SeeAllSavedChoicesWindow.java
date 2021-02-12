@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Label;
 import java.util.List;
 
 public class SeeAllSavedChoicesWindow {
-
+    private static final String NO_DATA_MSG = "There is no registred data";
     private static final String USER_LABEL = "User : ";
     private static final String TICKET_LABEL = "Ticket : ";
     private static final String ALL_USERS_CHOICES = "All Users Choices";
@@ -74,7 +74,15 @@ public class SeeAllSavedChoicesWindow {
         mainComposite.setLayout(gridLayout);
 
         createTicketsHistoriesComposites();
+        noDataAction();
         mainComposite.layout();
+    }
+
+    private void noDataAction() {
+        if(choicesHistoryList.isEmpty()){
+            Label noDataLbl = new Label(mainComposite, SWT.NONE);
+            noDataLbl.setText(NO_DATA_MSG);
+        }
     }
 
     private void createTicketsHistoriesComposites() {
